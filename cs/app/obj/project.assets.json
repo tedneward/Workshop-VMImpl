@@ -1,0 +1,92 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "cs/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/cs.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/cs.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "cs/1.0.0": {
+      "type": "project",
+      "path": "../vm/cs.csproj",
+      "msbuildProject": "../vm/cs.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "cs >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "/Users/tedneward/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/tedneward/Projects/Workshop-VMImpl/cs/app/app.csproj",
+      "projectName": "app",
+      "projectPath": "/Users/tedneward/Projects/Workshop-VMImpl/cs/app/app.csproj",
+      "packagesPath": "/Users/tedneward/.nuget/packages/",
+      "outputPath": "/Users/tedneward/Projects/Workshop-VMImpl/cs/app/obj/",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
+      "configFilePaths": [
+        "/Users/tedneward/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "/Users/tedneward/Projects/Workshop-VMImpl/cs/vm/cs.csproj": {
+              "projectPath": "/Users/tedneward/Projects/Workshop-VMImpl/cs/vm/cs.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.300/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
