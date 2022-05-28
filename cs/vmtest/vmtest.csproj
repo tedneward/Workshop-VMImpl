@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\vm\cs.csproj" />
+    <ProjectReference Include="..\vm\vm.csproj" />
   </ItemGroup>
 
 </Project>
