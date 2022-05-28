@@ -2,12 +2,15 @@
 
 public enum Bytecode 
 {
-    NOP = 0
+    NOP,
+    DUMP,
+    TRACE
 }
 
 public class VirtualMachine
 {
     int IP = 0;
+    bool trace = false;
 
     public void Execute(Bytecode[] code)
     {
@@ -17,6 +20,13 @@ public class VirtualMachine
             {
                 case Bytecode.NOP:
                     // Do nothing!
+                    break;
+                case Bytecode.DUMP:
+                    Console.WriteLine("IP: {0}", IP);
+                    Console.WriteLine("code: [{0}]", String.Join(",", code));
+                    break;
+                case Bytecode.TRACE:
+                    trace = !trace;
                     break;
                 default:
                     throw new Exception("Unrecognized opcode: " + code[IP]);

@@ -50,4 +50,34 @@ public class SimpleTests
         // If we get here, we're good
         Assert.IsTrue(vm != null);
     }
+
+    [TestMethod]
+    public void TestDUMP()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.NOP,
+            Bytecode.DUMP
+        };
+        vm.Execute(code);
+
+        // If we get here, we're good
+        Assert.IsTrue(vm != null);
+    }
+    [TestMethod]
+    public void TestTRACE()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.TRACE,
+            Bytecode.NOP,
+            Bytecode.DUMP
+        };
+        vm.Execute(code);
+
+        // If we get here, we're good
+        Assert.IsTrue(vm != null);
+    }
 }

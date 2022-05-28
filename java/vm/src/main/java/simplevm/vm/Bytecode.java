@@ -1,5 +1,7 @@
 package simplevm.vm;
 
 public enum Bytecode {
-    NOP
+    NOP,
+    DUMP,
+    TRACE
 }
