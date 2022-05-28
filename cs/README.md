@@ -10,6 +10,9 @@ The root SLN file contains references to the `vm` project, which is the virtual 
 ## Running tests
 `dotnet test` from the top-level directory will run the `vmtest` tests. There are no `app` tests.
 
+If you use `Console.WriteLine` to display output, the standard test runner will not display it; to see the generated console messages, use `dotnet test -l "console;verbosity=detailed"` instead.
+
+
 ## Running the app
 `dotnet run --project app` from the top-level directory will run the app, or drop into the `app` directory and do a `dotnet run` from there.
 
