@@ -3,7 +3,7 @@ namespace vmtest;
 using vm;
 
 [TestClass]
-public class UnitTest1
+public class SimpleTests
 {
     [TestMethod]
     public void TestTest()
