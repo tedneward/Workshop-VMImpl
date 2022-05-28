@@ -19,4 +19,35 @@ public class SimpleTests
 
         Assert.IsTrue(vm != null);
     }
+
+    [TestMethod]
+    public void TestNOP()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.NOP
+        };
+        vm.Execute(code);
+
+        // If we get here, we're good
+        Assert.IsTrue(vm != null);
+    }
+
+    [TestMethod]
+    public void TestNOPs()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.NOP,
+            Bytecode.NOP,
+            Bytecode.NOP,
+            Bytecode.NOP
+        };
+        vm.Execute(code);
+
+        // If we get here, we're good
+        Assert.IsTrue(vm != null);
+    }
 }

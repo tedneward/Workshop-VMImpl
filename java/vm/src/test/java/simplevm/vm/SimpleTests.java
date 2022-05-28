@@ -15,4 +15,29 @@ class SimpleTests {
 
         assertTrue(vm != null);
     }
+    @Test void testNOP() {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.NOP
+        };
+        vm.execute(code);
+
+        // If we got here, with no exception, we're good
+        assertTrue(true);
+    }
+    @Test void testNOPs() {
+        VirtualMachine vm = new VirtualMachine();
+
+        Bytecode[] code = {
+            Bytecode.NOP,
+            Bytecode.NOP,
+            Bytecode.NOP,
+            Bytecode.NOP
+        };
+        vm.execute(code);
+
+        // If we got here, with no exception, we're good
+        assertTrue(true);
+    }
 }
