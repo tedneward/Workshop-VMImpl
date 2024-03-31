@@ -14,6 +14,9 @@ There is a dotnet 6.0 proejct set up to use C# to implement the Workshop in the 
 ## Java
 There is a Gradle project set up to use Java to implement the Workshop in the `java` subdirectory from here. See that README for details.
 
+## App vs VM
+Note that all of the projects are set up in an "app"/"lib" structure, where the VM is built as a library, called from a very simple shell called "app". We won't actually use "app" for anything in this workshop, and it is provided merely as an extension point should you wish to try running the VM from the command-line.
+
 # Steps
 The steps to the workshop are as follows:
 
