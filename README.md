@@ -17,13 +17,12 @@ There is a Gradle project set up to use Java to implement the Workshop in the `j
 # Steps
 The steps to the workshop are as follows:
 
-## Step 0: Infrastructure
-Our VirtualMachine needs some basic infrastructure to get started. Our VM will be an extremely simple stack-based machine, so as to keep the infrastructure needs lightweight and straightforward. We will begin by working solely wth integers (no floats, no strings, no booleans, etc).
+* **Step 0: Infrastructure**: Our virtual machine needs some basic infrastructure to get started, such as a stack, an instruction pointer, and the ability to push and pop elements from the stack. We'll also introduce a few "diagnotic" bytecode instructions to make it easier for us to debug/diagnose both the virtual machine and our bytecode programs as we go.
+* **Step 1: Maths**: Having created a simple stack VM, let's add some basic calculation functionality. This will require introducing some bytecode instructions to push literal values onto the stack, as well as some bytecode instructions to do the canonical maths operations (add, subtract, etc).
+* **Step 2: **:
+* **Step 3: **:
+* **Step 4: **:
 
-* We want to begin by implementing the world's simplest opcode: `NOP`, which literally does nothing. Create an enumeration type (or its closest equivalent) called `Bytecode`. Within that enumeration, define `NOP` as a value. (If the enumerations are backed by integers, set `NOP` to be `0`, which is its traditional value.)
-* When we execute code, we'll want to keep track of our location through the code; define a field called `IP` (for "Instruction Pointer") that will keep track of where we are inside the bytecode.
-* The VM needs our processor loop; create a method called `execute`/`Execute` that takes an array of `Bytecode` values. Within this method, walk through the array, and if the bytecode value is a `NOP`, do nothing. (Put a comment there, just as a reminder that this is deliberate!) If it is an unrecognized value, throw an exception that states as much. Make sure `IP` is pointing to the current location in the bytecode at all times!
-* *(Optional)* Note that this is our VM, and it can be helpful to have some diagnostic opcodes as a part of the bytecode set, so that we can examine contents. Add a `DUMP` opcode that, when executed, dumps the virtual machine's current state to log/console.
-* *(Optional)* Add a boolean "trace" flag/property, defaulting to `false`. Use this flag to determine whether to print/log the various things going on in the VM. Add a `TRACE` opcode that, when executed, flips this flag (from `false` to `true`, or from `true` to `false`). While tracing is on, print out the bytecode being fetched/decoded/executed (along with any operands and results).
+Some optional steps to consider adding to your virtual machine:
 
-
+If you're ready to get started, do a `git checkout step0begin` and have at it! Keep in mind that you can always check your work against my implementation (on the `step0end` branch).
