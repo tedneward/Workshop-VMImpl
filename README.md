@@ -1,5 +1,5 @@
-# Workshop-VMImpl: Step 1 (Mathematics) - Completed!
-Welcome to my implementation of step 1! This will essentially be the same code as what's in the branch `step2begin`, but this document will be different (since the `step2begin` branch will contain the instructions for Step 2).
+# Workshop-VMImpl: Step 2 (Comparisons)
+Welcome to step 2! In this step, we will implement the various comparison operators, which are actually very, very similar to the mathematics operators you just finished. (In fact, I debated whether or not to put both steps into a single one.)
 
 The code in this step is from my implementation of the `step1end` branch; you are not obligated to use it, so long as your tests passed at the end of step 1.
 
@@ -9,26 +9,25 @@ Note that both projects have unit tests in place already ***that will fail***, o
 You are, of course, encouraged to add a few of your own, just to make sure that the code coverage number is the industry-standard 110%!
 
 ## Steps
-We will now add a few maths opcodes. These are generally characterized into two camps: the binary operators (add, subtract, multiply, divide, modulo, and so on), which take two parameters, and the unary operators (absolute-value, and negation), which take one parameter. All will also have the characteristic that they will consume their parameters off the stack, but produce a result back onto the top of the stack.
+We will now add the range of comparison opcodes (equals, not-equals, greater-than, greater-than-or-equals, and so on). These are all binary operators, taking two elements off the top of the stack, performing their comparison, and pushing the result (a "1" for true, a "0" for false) onto the top of the stack.
 
-### Unary operators
-These take one parameter off the stack, and push their result back onto the stack.
+> Implementation note: Although the "1" for true and "0" for false is a pretty universal assumption, some languages and platforms have experimented with other values here--pity the poor Visual Basic programmer (pre-.NET version), where "0" was true, and "-1" wsa false. To this day, I've never heard any of VB language designers explain why they went with that.
 
-* Implement the `ABS` bytecode, which calculates the absolute value of the value at the top of the stack. That is to say, unlike `CONST`, which expected its parameter to be present in the bytecode, `ABS` (and the other mathematical operators) pops its operand off the stack, does its calculation, and then pushes its result back onto the stack. Thus, `CONST -10`/`ABS` will result in `10` at the top of the stack.
+Note that for some operators (equals, not-equals) the order of parameters on the stack is not important, but for others (greater-than, lesser-than, etc) it will be important for you to make sure you are clear as to which of the two parameters on the stack are the "left" of the operation, and which is the "right" (as you no doubt discovered when implementing `SUB`, `DIV`, and `MOD` in the last step.)
 
-* Implement the `NEG` bytecode, which provides the mathematical "negation" operation: it takes a positive value and converts it to negative, or a negative value back into positive. Thus, `CONST 10`/`NEG` will result in `-10` at the top of the stack, and `CONST 10`/`NEG`/`NEG` will result in `10` (10 -> -10 -> 10) at the top of the stack.
+### Equality (==, !=) operators
+These take two parameters off the stack, and push their result back onto the stack.
 
-### Binary operators
+* Implement the `EQ` bytecode, which takes two parameters off the stack, compares their numerical values (since they are all integers), and pushes either a "1" if they are the same value, or a "0" if they are not, onto the top of the stack.
+* Implement the `NEQ` bytecode, which does the inverse of the `EQ` bytecode.
+
+### Relative (<, >, <=, or >=) operators
 These take the top two parameters off the stack, and push their result back onto the stack.
 
-* Implement the `ADD` bytecode, which sums up the top two parameters off the stack, and pushes their result back onto the stack.
+* Implement `GT`, which is our "greater-than" bytecode.
+* Implement `GTE`, which is our "greather-than-or-equal" bytecode.
+* Implement `LT`, which is our "lesser-than" bytecode.
+* Implement `LTE`, which is our "lesser-than-or-equal" bytecode.
 
-* Implement `SUB`.
+> Discussion opportunity: All of these operators have the interesting property in that they are all deeply similar to one another--`GT` is essentially the inverse of `LTE`, for example. What's the absolute minimum operator set you could use here? (My intuition suggests three out of the six, but I'm no mathematician.)
 
-* Implement `MUL`.
-
-* Implement `DIV`.
-
-* Implement `MOD`, the modulo operator. (For those who aren't familiar with this operation, modulo is the "remainder" operation from division; 10 / 2 = 5 with no remainder, so 10 modulo 2 is 0. Similarly 9 / 4 is 2 with a remainder of 1, so 9 modulo 4 is 1.)
-
-> Discussion opportunity: The unary and binary operators are, in many respects, very similar to one another. What sort of refactoring opportunities do you see here, in general and/or in your implementation? Take a second to add a few tests to keep yourself honest, then do some refactoring.
