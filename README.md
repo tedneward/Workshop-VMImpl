@@ -20,9 +20,9 @@ Note that all of the projects are set up in an "app"/"lib" structure, where the 
 # Steps
 The steps to the workshop are as follows:
 
-* **Step 0: Infrastructure**: Our virtual machine needs some basic infrastructure to get started, such as a stack, an instruction pointer, and the ability to push and pop elements from the stack. We'll also introduce a few "diagnotic" bytecode instructions to make it easier for us to debug/diagnose both the virtual machine and our bytecode programs as we go.
-* **Step 1: Maths**: Having created a simple stack VM, let's add some basic calculation functionality. This will require introducing some bytecode instructions to push literal values onto the stack, as well as some bytecode instructions to do the canonical maths operations (add, subtract, etc).
-* **Step 2: **:
+* **Step 0: Infrastructure**: Our virtual machine needs some basic infrastructure to get started, such as a stack, an instruction pointer, and the ability to push and pop elements from the stack. We'll also introduce a few "diagnostic" and stack-support bytecode instructions to make it easier for us to debug/diagnose both the virtual machine and our bytecode programs as we go.
+* **Step 1: Maths**: Having created a simple stack VM, let's add some basic calculation functionality. This will require introducing some bytecode instructions to do the canonical maths operations (add, subtract, etc).
+* **Step 2: Comparisons**: Very similar to the mathematical operators, comparison operators compare two values and return either a "true" or "false" result to the top of the stack.
 * **Step 3: **:
 * **Step 4: **:
 
