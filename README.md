@@ -50,5 +50,7 @@ The next bytecode is `POP`, which removes the top of the stack.
 
 * Implement a `CONST` opcode, which expects one parameter. Inside of "execute", push that parameter onto the stack. (In other words, `CONST 14` will be the same as calling `pop(14)` / `Pop(14)`.)
 
+* Implement a `PRINT` opcode, which expects one parameter. Print that paramter to the console.
+
 ### Make sure all the tests pass!
 And implement a few more if you want or need.
