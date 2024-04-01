@@ -25,6 +25,11 @@ The third, the `JMPI`, or "indirect jump", bytecode instruction, takes its absol
 ### Relative indirect jump
 The third, the `RJMPI`, or "relative indirect jump", bytecode instruction, takes its relative target location from the top of the operation stack (rather than from the bytecode stream), and sets the instruction pointer to that value. So a bytecode stream of `CONST -5`/`RJMPI` would jump to IP (current IP -5) and begin executing from there.
 
+### Branching jump
+Lastly, we need some instructions to tell the VM to jump to a new instruction based on the value of the top of the stack. The most common of these are `JZ` (Jump if Zero) and `JNZ` (Jump if Not Zero), which take a single parameter from the bytecode stream (the target instruction to jump to), and examine the top of the stack to determine whether to jump. (This is what most `if` blocks use in most languages.) So, a bytecode stream of `CONST 0`/`JZ 5` would jump to instruction 5, since the top of the stack is a 0 at the time of the `JZ` instruction's execution.
+
+Note that we could (and arguably should!) implement relative and indirect versions of the `JZ`/`JNZ` instructions (such that we would have a `RJZ`/`RJNZ`, `JZI`/`JNZI`, and `RJZI`/`RJNZI` instructions as well); I leave those as an exercise to the workshop attendee. :-)
+
 ## Note
 There is another form of jump/branch, often a "call" or "go-sub" instruction, in which the virtual machine "remembers" the instruction pointer at which the call takes place, and expects a later "return" instruction to cause the VM to come back to the original location (in order to execute the next instruction). This is usually in conjunction with more in the way of "procedure" support, which we'll explore in Step 6.
 
