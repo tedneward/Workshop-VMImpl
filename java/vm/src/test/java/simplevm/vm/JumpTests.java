@@ -61,6 +61,28 @@ public class JumpTests {
         assertEquals(0, vm.getStack().length);
     }
 
+    @Test void testJNZ()
+    {
+        vm.execute(new int[] {
+            /* 0*/ CONST, 5,
+            /* 2*/ JNZ, 6, // Jump to IP 6 if TOS (5) is not zero
+            /* 4*/ FATAL,
+            /* 5*/ FATAL,
+            /* 6*/ NOP
+        });
+    }
+
+    @Test void testJZ()
+    {
+        vm.execute(new int[] {
+            /* 0*/ CONST, 0,
+            /* 2*/ JNZ, 6, // Jump to IP 6 if TOS (0) is zero
+            /* 4*/ FATAL,
+            /* 5*/ FATAL,
+            /* 6*/ NOP
+        });
+    }
+
     @Test void testLotsofJumps() {
         VirtualMachine vm = new VirtualMachine();
         vm.execute(new int[] {
