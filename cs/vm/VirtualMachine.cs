@@ -6,11 +6,23 @@ public enum Bytecode
     DUMP,
     TRACE,
     PRINT,
+    HALT,
     FATAL,
 
     // Stack opcodes
     CONST,
-    POP
+    POP,
+
+    // Math opcodes (binary)
+    ADD,
+    SUB,
+    MUL,
+    DIV,
+    MOD,
+
+    // Math opcodes (unary)
+    ABS,
+    NEG
 }
 
 
@@ -76,6 +88,9 @@ public class VirtualMachine
                 Trace("PRINT");
                 Console.WriteLine(Pop());
                 break;
+            case Bytecode.HALT:
+                Trace("HALT");
+                return;
             case Bytecode.FATAL:
                 Trace("FATAL");
                 throw new Exception(String.Format("FATAL exception thrown; IP {0}",IP));
@@ -89,6 +104,63 @@ public class VirtualMachine
                 // throw away returned value
                 Pop();
                 break;
+
+            // Mathematical ops
+            case Bytecode.ADD:
+            {
+                Trace("ADD");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs + rhs);
+                break;
+            }
+            case Bytecode.SUB:
+            {
+                Trace("SUB");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs - rhs);
+                break;
+            }
+            case Bytecode.MUL:
+            {
+                Trace("MUL");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs * rhs);
+                break;
+            }
+            case Bytecode.DIV:
+            {
+                Trace("DIV");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs / rhs);
+                break;
+            }
+            case Bytecode.MOD:
+            {
+                Trace("MOD");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs % rhs);
+                break;
+            }
+            case Bytecode.ABS:
+            {
+                Trace("ABS");
+                int val = Pop();
+                Push(Math.Abs(val));
+                break;
+            }
+            case Bytecode.NEG:
+            {
+                Trace("NEG");
+                int val = Pop();
+                Push(-val);
+                break;
+            }
+            
         }
     }
     int IP = -1;
@@ -106,6 +178,13 @@ public class VirtualMachine
                 case Bytecode.PRINT:
                 case Bytecode.FATAL:
                 case Bytecode.POP:
+                case Bytecode.ADD:
+                case Bytecode.SUB:
+                case Bytecode.MUL:
+                case Bytecode.DIV:
+                case Bytecode.MOD:
+                case Bytecode.ABS:
+                case Bytecode.NEG:
                     Execute(opcode);
                     break;
 
@@ -116,6 +195,10 @@ public class VirtualMachine
                     break;
 
                 // 2-operand opcodes
+
+                // Special handling to bail out early
+                case Bytecode.HALT:
+                    return;
 
                 // Unrecognized opcode
                 default:

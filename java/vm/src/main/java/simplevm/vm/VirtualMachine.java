@@ -82,7 +82,68 @@ public class VirtualMachine {
                 trace("POP");
                 pop();
                 break;
-        }
+
+            // Binary math operations
+            case ADD:
+            {
+                trace("ADD");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs + rhs);
+                break;
+            }
+            case SUB:
+            {
+                trace("SUB");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs - rhs);
+                break;
+            }
+            case MUL:
+            {
+                trace("MUL");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs * rhs);
+                break;
+            }
+            case DIV:
+            {
+                trace("DIV");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs / rhs);
+                break;
+            }
+            case MOD:
+            {
+                trace("ADD");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs % rhs);
+                break;
+            }
+            // Unary math operations
+            case ABS:
+                trace("ABS");
+                push(Math.abs(pop()));
+                break;
+            case NEG:
+                trace("NEG");
+                push(- pop());
+                break;
+            }
     }
     int ip = 0;
     public void execute(int[] code) {
@@ -90,6 +151,10 @@ public class VirtualMachine {
         {
             switch (code[ip])
             {
+                case HALT:
+                    trace("HALT at " + ip);
+                    return;
+
                 // 0-operand opcodes
                 case NOP:
                 case TRACE:
@@ -97,6 +162,13 @@ public class VirtualMachine {
                 case PRINT:
                 case FATAL:
                 case POP:
+                case ADD:
+                case SUB:
+                case MUL:
+                case DIV:
+                case MOD:
+                case ABS:
+                case NEG:
                     execute(code[ip]);
                     ip++;
                     break;

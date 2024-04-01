@@ -1,7 +1,7 @@
-# Workshop-VMImpl: Step 1 (Mathematics)
-Welcome to step 1! In this step, we begin implementing actual "functionality" in the virtual machine, by adding some of the core mathematics operations (add, subtract, etc).
+# Workshop-VMImpl: Step 1 (Mathematics) - Completed!
+Welcome to my implementation of step 1! This will essentially be the same code as what's in the branch `step2begin`, but this document will be different (since the `step2begin` branch will contain the instructions for Step 2).
 
-The code in this step is from my implementation of the `step0end` branch; you are not obligated to use it, so long as your tests passed at the end of step 0.
+The code in this step is from my implementation of the `step1end` branch; you are not obligated to use it, so long as your tests passed at the end of step 1.
 
 ## Important Note: Tests
 Note that both projects have unit tests in place already ***that will fail***, out of the box, right now. These are intended as very rough guides to make sure that your implementation meets our "expectations" (basically, that your code will work for future steps in the manner in which the workshop creator is expecting!). These are not considered to be extensive or comprehensive or even good examples of tests or TDD--they're just there to help make sure we're all on the same path together, and to give you a sense of what we're trying to build (in those situations where the text above isn't clear enough).
