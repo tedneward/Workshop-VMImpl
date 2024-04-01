@@ -99,7 +99,7 @@ public class JumpTests
 
         vm.Execute(new Bytecode[] {
             /* 0*/ Bytecode.CONST, (Bytecode)0,
-            /* 2*/ Bytecode.JNZ, (Bytecode)6, // Jump to IP 6 if TOS (0) is zero
+            /* 2*/ Bytecode.JZ, (Bytecode)6, // Jump to IP 6 if TOS (0) is zero
             /* 4*/ Bytecode.FATAL,
             /* 5*/ Bytecode.FATAL,
             /* 6*/ Bytecode.NOP
