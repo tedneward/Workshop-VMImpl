@@ -75,7 +75,7 @@ public class JumpTests {
     {
         vm.execute(new int[] {
             /* 0*/ CONST, 0,
-            /* 2*/ JNZ, 6, // Jump to IP 6 if TOS (0) is zero
+            /* 2*/ JZ, 6, // Jump to IP 6 if TOS (0) is zero
             /* 4*/ FATAL,
             /* 5*/ FATAL,
             /* 6*/ NOP
