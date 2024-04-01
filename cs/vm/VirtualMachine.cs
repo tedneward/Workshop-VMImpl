@@ -22,7 +22,15 @@ public enum Bytecode
 
     // Math opcodes (unary)
     ABS,
-    NEG
+    NEG,
+
+    // Comparison
+    EQ,
+    NEQ,
+    GT,
+    LT,
+    GTE,
+    LTE,
 }
 
 
@@ -161,6 +169,55 @@ public class VirtualMachine
                 break;
             }
             
+            // Comparison ops
+            case Bytecode.EQ:
+            {
+                Trace("EQ");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs == rhs ? 1 : 0);
+                break;
+            }
+            case Bytecode.NEQ:
+            {
+                Trace("NEQ");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs != rhs ? 1 : 0);
+                break;
+            }
+            case Bytecode.GT:
+            {
+                Trace("GT");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs > rhs ? 1 : 0);
+                break;
+            }
+            case Bytecode.LT:
+            {
+                Trace("LT");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs < rhs ? 1 : 0);
+                break;
+            }
+            case Bytecode.GTE:
+            {
+                Trace("GTE");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs >= rhs ? 1 : 0);
+                break;
+            }
+            case Bytecode.LTE:
+            {
+                Trace("LTE");
+                int rhs = Pop();
+                int lhs = Pop();
+                Push(lhs <= rhs ? 1 : 0);
+                break;
+            }
         }
     }
     int IP = -1;
@@ -185,26 +242,29 @@ public class VirtualMachine
                 case Bytecode.MOD:
                 case Bytecode.ABS:
                 case Bytecode.NEG:
+                case Bytecode.EQ:
+                case Bytecode.NEQ:
+                case Bytecode.GT:
+                case Bytecode.LT:
+                case Bytecode.GTE:
+                case Bytecode.LTE:
                     Execute(opcode);
+                    IP += 1;
                     break;
 
                 // 1-operand opcodes
                 case Bytecode.CONST:
-                    int operand = (int)code[++IP];
+                    int operand = (int)code[IP + 1];
                     Execute(opcode, operand);
+                    IP += 2;
                     break;
 
                 // 2-operand opcodes
-
-                // Special handling to bail out early
-                case Bytecode.HALT:
-                    return;
 
                 // Unrecognized opcode
                 default:
                     throw new Exception("Unrecognized opcode: " + code[IP]);
             }
-            IP++;
         }
     }
 }

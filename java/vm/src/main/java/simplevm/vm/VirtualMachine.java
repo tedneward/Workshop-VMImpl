@@ -143,7 +143,69 @@ public class VirtualMachine {
                 trace("NEG");
                 push(- pop());
                 break;
+
+            // Comparison ops
+            case EQ:
+            {
+                trace("EQ");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs == rhs ? 1 : 0);
+                break;
             }
+            case NEQ:
+            {
+                trace("NEQ");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs != rhs ? 1 : 0);
+                break;
+            }
+            case GT:
+            {
+                trace("GT");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs > rhs ? 1 : 0);
+                break;
+            }
+            case LT:
+            {
+                trace("LT");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs < rhs ? 1 : 0);
+                break;
+            }
+            case GTE:
+            {
+                trace("GTE");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs >= rhs ? 1 : 0);
+                break;
+            }
+            case LTE:
+            {
+                trace("LTE");
+                // Left-to-right-pushed parameter order
+                // means we extract in reverse order
+                int rhs = pop();
+                int lhs = pop();
+                push(lhs <= rhs ? 1 : 0);
+                break;
+            }
+        }
     }
     int ip = 0;
     public void execute(int[] code) {
@@ -156,6 +218,7 @@ public class VirtualMachine {
                     return;
 
                 // 0-operand opcodes
+                //
                 case NOP:
                 case TRACE:
                 case DUMP:
@@ -169,11 +232,18 @@ public class VirtualMachine {
                 case MOD:
                 case ABS:
                 case NEG:
+                case EQ:
+                case NEQ:
+                case GT:
+                case LT:
+                case GTE:
+                case LTE:
                     execute(code[ip]);
                     ip++;
                     break;
-                
+
                 // 1-operand opcodes
+                //
                 case CONST:
                     execute(code[ip], code[ip + 1]);
                     ip += 2;

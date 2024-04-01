@@ -24,4 +24,30 @@ public class Bytecode {
     public static final int MOD = 24;
     public static final int ABS = 25;
     public static final int NEG = 26;
+
+    // Comparison
+    public static final int EQ = 30;
+    public static final int NEQ = 31;
+    public static final int GT = 32;
+    public static final int LT = 33;
+    public static final int GTE = 34;
+    public static final int LTE = 35;
+
+    // Branching
+    public static final int JMP = 40;
+    public static final int RJMP = 41;
+    public static final int JMPI = 42;
+    public static final int RJMPI = 43;
+    public static final int JNZ = 44;
+    public static final int JZ = 45;
+
+    // Globals
+    public static final int GLOAD = 50;
+    public static final int GSTORE = 51;
+
+    // Functions
+    public static final int CALL = 60;
+    public static final int RET = 61;
+    public static final int LOAD = 62;
+    public static final int STORE = 63;
 }

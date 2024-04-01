@@ -1,7 +1,5 @@
-# Workshop-VMImpl: Step 2 (Comparisons)
-Welcome to step 2! In this step, we will implement the various comparison operators, which are actually very, very similar to the mathematics operators you just finished. (In fact, I debated whether or not to put both steps into a single one.)
-
-The code in this step is from my implementation of the `step1end` branch; you are not obligated to use it, so long as your tests passed at the end of step 1.
+# Workshop-VMImpl: Step 2 (Comparisons) - Complete!
+Welcome to my implementation of step 2! This will essentially be the same code as what's in the branch `step3begin`, but this document will be different (since the `step3begin` branch will contain the instructions for Step 3).
 
 ## Important Note: Tests
 Note that both projects have unit tests in place already ***that will fail***, out of the box, right now. These are intended as very rough guides to make sure that your implementation meets our "expectations" (basically, that your code will work for future steps in the manner in which the workshop creator is expecting!). These are not considered to be extensive or comprehensive or even good examples of tests or TDD--they're just there to help make sure we're all on the same path together, and to give you a sense of what we're trying to build (in those situations where the text above isn't clear enough).
