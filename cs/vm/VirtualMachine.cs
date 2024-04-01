@@ -6,7 +6,6 @@ public enum Bytecode
     DUMP,
     TRACE,
     PRINT,
-    HALT,
     FATAL,
 
     // Stack opcodes
@@ -104,9 +103,6 @@ public class VirtualMachine
                 Trace("PRINT");
                 Console.WriteLine(Pop());
                 break;
-            case Bytecode.HALT:
-                Trace("HALT");
-                return;
             case Bytecode.FATAL:
                 Trace("FATAL");
                 throw new Exception(String.Format("FATAL exception thrown; IP {0}",IP));
