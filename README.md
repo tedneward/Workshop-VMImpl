@@ -1,5 +1,5 @@
-# Workshop-VMImpl: Step 0 (Infrastructure)
-Welcome to step 0! In this step, we begin by laying out the core infrastructure required for a stack-based virtual machine.
+# Workshop-VMImpl: Step 0 (Infrastructure) - Completed!
+Welcome to my implementation of step 0! This will essentially be the same code as what's in the branch `step1begin`, but this document will be different (since the `step1begin` branch will contain the instructions for Step 1).
 
 ## Important Note: Tests
 Note that both projects have unit tests in place already ***that will fail***, out of the box, right now. These are intended as very rough guides to make sure that your implementation meets our "expectations" (basically, that your code will work for future steps in the manner in which the workshop creator is expecting!). These are not considered to be extensive or comprehensive or even good examples of tests or TDD--they're just there to help make sure we're all on the same path together, and to give you a sense of what we're trying to build (in those situations where the text above isn't clear enough).
@@ -49,6 +49,8 @@ The next bytecode is `POP`, which removes the top of the stack.
 * Create another `execute`/`Execute` method called that takes an array of `Bytecode` values. This array will contain a stream of (essentially) integer values, a mix of operations and their operands. This new, overloaded, "execute" method will take the array of `Bytecode`, set the "instruction pointer" to 0, and examine the bytecode at the 0th position in the array. If it is a bytecode that expects an argument/operand, it will need to grab the next element in the array (incrementing IP appropriately!) and pass it as the parameter when calling the original `execute`/`Execute` method.
 
 * Implement a `CONST` opcode, which expects one parameter. Inside of "execute", push that parameter onto the stack. (In other words, `CONST 14` will be the same as calling `pop(14)` / `Pop(14)`.)
+
+* Implement a `PRINT` opcode, which expects one parameter. Print that paramter to the console.
 
 ### Make sure all the tests pass!
 And implement a few more if you want or need.
