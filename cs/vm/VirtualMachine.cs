@@ -334,10 +334,6 @@ public class VirtualMachine
 
                 // 2-operand opcodes
 
-                // Special handling to bail out early
-                case Bytecode.HALT:
-                    return;
-
                 // Unrecognized opcode
                 default:
                     throw new Exception("Unrecognized opcode: " + code[IP]);
