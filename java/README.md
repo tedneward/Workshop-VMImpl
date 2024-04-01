@@ -3,8 +3,8 @@ This directory contains the Java implementation of the SimpleVM stack-machine im
 
 Given that this is greenfield work, the project uses latest-and-greatest versions of Java at the time of its creation. Currently that means:
 
-* Gradle 7.4.2
-* Java 18
+* Gradle 8.7
+* Java 21
 
 The root Gradle settings.gradle.kts contains references to the `vm` project, which is the virtual machine implementation project. Tests for `vm` are found in that project, and the peer `app` project doesn't do much besides provide a simple shell by which to run the VM, for those who prefer to see console output instead of test results.
 

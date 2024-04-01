@@ -3,7 +3,7 @@ This directory contains the C# implementation of the SimpleVM stack-machine impl
 
 Given that this is greenfield work, the project uses latest-and-greatest versions of `dotnet` at the time of its creation. Currently that means:
 
-* .NET SDK v6.0.300
+* .NET SDK v8.0.101
 
 The root SLN file contains references to the `vm` project, which is the virtual machine implementation project. Tests for `vm` are found in the peer `vmtest` project, and `app` doesn't do much besides provide a simple shell by which to run the VM, for those who prefer to see console output instead of test results.
 

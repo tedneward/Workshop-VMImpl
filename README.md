@@ -1,29 +1,54 @@
-# Workshop-VMImpl
-Files and templates to go along with my "Busy Dev's Workshop on Building a Virtual Machine"
+# Workshop-VMImpl: Step 0 (Infrastructure)
+Welcome to step 0! In this step, we begin by laying out the core infrastructure required for a stack-based virtual machine.
 
-Because this workshop is intended for developers of all stripes, there are several subdirectories here with implementation scaffolding for different language/platforms:
+## Important Note: Tests
+Note that both projects have unit tests in place already ***that will fail***, out of the box, right now. These are intended as very rough guides to make sure that your implementation meets our "expectations" (basically, that your code will work for future steps in the manner in which the workshop creator is expecting!). These are not considered to be extensive or comprehensive or even good examples of tests or TDD--they're just there to help make sure we're all on the same path together, and to give you a sense of what we're trying to build (in those situations where the text above isn't clear enough).
 
-* C#
-* Java
+You are, of course, encouraged to add a few of your own, just to make sure that the code coverage is the industry-standard 110%!
 
-Developers are free to choose whichever of the subdirectories they wish. Alternatively, if comfortable with doing so, feel free to create a new subdirectory and implement it in your own language of choice. Virtual machines have been written in almost every language in the universe, including Smalltalk and JavaScript and Self, and the concepts we are exploring here are not so low-level that performance or overhead will be a problem.
+## Steps
+Our VirtualMachine needs some basic infrastructure to get started. Our VM will be an extremely simple stack-based machine, so as to keep the infrastructure needs lightweight and straightforward. We will begin by working solely wth integers (no floats, no strings, no booleans, etc) for both our bytecode operands and parameters.
 
-## C#
-There is a dotnet 6.0 proejct set up to use C# to implement the Workshop in the `cs` subdirectory from here. See that README for details.
+### Some diagnostic options
+In this step, you add a few properties and methods to make it easier to diagnose/debug the virtual machine itself.
 
-## Java
-There is a Gradle project set up to use Java to implement the Workshop in the `java` subdirectory from here. See that README for details.
+* When we execute code, we'll want to keep track of our location through the code; define a field called `ip` (for "Instruction Pointer") that will keep track of where we are inside the currently-executing bytecode program.
+* For a stack-based virtual machine, we obviously need a stack! Create an array of 100 integers and call it `stack`. We will also need to know where we are in this array (where is the top of the stack), so also create a "stack pointer" integer field, and call it `sp`.
+* We will want (for both internal consistency and external testing purposes) easy ways to push and pop things from this stack. Implement a `push` / `Push` method that pushes something onto the `stack`. Likewise, `pop` / `Pop` will remove an element from the `stack` and return that value to the caller. Make sure both methods increment/decrement `sp` correctly.
+    > **Implementation note:** Typically, a stack "grows downward" in memory, but when we have a flat array of integers, that perspective may or may not make sense. I typically view it this way: the first element pushed is at `stack[0]`, the second at `stack[1]`, and so on. I've had some people tell me that's "growing downwards", while others see it as "growing upwards". The terminology isn't important, but being consistent with the treatment of the stack pointer (`sp`) is critical. Fortunately, consistency is easily verified with unit tests, which is why we have them!
+* Purely for our own testing purposes, provide a method (`getStack()`) or property (`Stack`) that returns a read-only copy of the current stack. *Make sure you only copy up to `sp`!* In other words, `getStack().length` or `Stack.Length` should return only those parts of `stack` that currently hold values pushed onto the stack.
+* Implement a `dump` / `Dump` method on the VirtualMachine that will write to the console the current state of the virtual machine. It should not change the state of the virtual machine itself.
+* *(Optional)* Add a boolean "trace" flag/property, defaulting to `false`. Use this flag to determine whether to print/log the various things going on in the VM. If you do this, also define a method (usually called "trace") that will print out a message passed in if the "trace" flag is set to `true`. This would be useful for logging-type statements from within the VM.
 
-# Steps
-The steps to the workshop are as follows:
+> **Implementation question:** What do you want to have happen when a caller `pop()`s with nothing remaining on the stack? This is typically a fatal error for a virtual machine, and could thus be represented with an exception thrown, but you may have opinions of your own what to do here.
 
-## Step 0: Infrastructure
-Our VirtualMachine needs some basic infrastructure to get started. Our VM will be an extremely simple stack-based machine, so as to keep the infrastructure needs lightweight and straightforward. We will begin by working solely wth integers (no floats, no strings, no booleans, etc).
+### The core execute loop
+In this step, you add the core fetch-decode-execute functionality that drives the heart of the virtual machine.
 
-* *(Optional)* Add a boolean "trace" flag/property, defaulting to `false`. Use this flag to determine whether to print/log the various things going on in the VM. 
-* We want to begin by implementing the world's simplest opcode: `NOP`, which literally does nothing. Create an enumeration type (or its closest equivalent) called `Bytecode`. Within that enumeration, define `NOP` as a value. (If the enumerations are backed by integers, set `NOP` to be `0`, which is its traditional value.)
-* When we execute code, we'll want to keep track of our location through the code; define a field called `IP` (for "Instruction Pointer") that will keep track of where we are inside the bytecode.
-* The VM needs our processor loop; create a method called `execute`/`Execute` that takes an array of `Bytecode` values. Within this method, walk through the array, and if the bytecode value is a `NOP`, do nothing. (Put a comment there, just as a reminder that this is deliberate!) If it is an unrecognized value, throw an exception that states as much. Make sure `IP` is pointing to the current location in the bytecode at all times!
+* Create a method called `execute` / `Execute` that takes a single Bytecode parameter, and a second parameter that allows for a variable list of integer parameters. (In Java, this is an `...`-suffixed declaration; in C#, use `params`.) Within this method, you will examine the incoming opcode to determine what to execute--this is traditionally a giant "switch" statement. Thus far, since we have no bytecode implemented yet, it will be empty.
 
+### The first bytecode: NOP
+In this step, you add the first bytecode operation, the one that does... nothing.
 
+* Implement the world's simplest opcode: `NOP`, which literally does nothing. Create an enumeration type (or its closest equivalent) called `Bytecode`. Within that enumeration, define `NOP` as a value. (If the enumerations are backed by integers, set `NOP` to be `0`, which is its traditional value.) In your `execute` method, have the `NOP` branch of your switch do nothing. (You may want to "trace" that you've done nothing, just to make sure that your switch is working correctly.) `NOP` has no parameters, so either ignore any parameters passed in, or if you want to be really defensive about it, "trace" that parameters were passed in and ignored.
 
+> **Implementation note: Bytecode operation values.** It is not uncommon for instructions to be "grouped" into particular ranges, so that all of the "diagnostic" bytecodes might be the numeric values 0 to 9, the "stack" instructions 10 to 19, the "maths" operations 20 to 29, and so on. These numbers are opaque to us in this workshop, but in production implementations they are often grouped this way in order to "pack" instructions and parameters into a single 32- or 64-bit value via bit manipulation. Just keep in mind that once you put your virtual machine into production, you cannot ever go back and rearrange the instruction values!
+
+### The diagnostic bytecode: DUMP and TRACE
+*(This is an optional step.)*
+
+* Implement a `TRACE` bytecode, whose implementation is to "flip" the "trace" flag (if you implemented it) to `true` if it's currently `false`, and vice-versa.
+* Implement a `DUMP` bytecode, whose implementation is to call your VirtualMachine's `dump`/`Dump` method.
+* Implement a `FATAL` bytecode, which terminates the VM immediately (throw an exception that's not intended to be caught by callers). This is often useful during testing to immediately spot errors.
+
+### The stack bytecodes: CONST (push) and POP
+The next bytecode is `POP`, which removes the top of the stack.
+
+* Implement a `POP` opcode, which takes no parameters ("operands") and simply pops off the current top of the stack. (It mimics the `pop`/`Pop` method, basically.)
+
+* Create another `execute`/`Execute` method called that takes an array of `Bytecode` values. This array will contain a stream of (essentially) integer values, a mix of operations and their operands. This new, overloaded, "execute" method will take the array of `Bytecode`, set the "instruction pointer" to 0, and examine the bytecode at the 0th position in the array. If it is a bytecode that expects an argument/operand, it will need to grab the next element in the array (incrementing IP appropriately!) and pass it as the parameter when calling the original `execute`/`Execute` method.
+
+* Implement a `CONST` opcode, which expects one parameter. Inside of "execute", push that parameter onto the stack. (In other words, `CONST 14` will be the same as calling `pop(14)` / `Pop(14)`.)
+
+### Make sure all the tests pass!
+And implement a few more if you want or need.
