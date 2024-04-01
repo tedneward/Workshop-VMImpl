@@ -23,7 +23,7 @@ The steps to the workshop are as follows:
 * **Step 0: Infrastructure**: Our virtual machine needs some basic infrastructure to get started, such as a stack, an instruction pointer, and the ability to push and pop elements from the stack. We'll also introduce a few "diagnostic" and stack-support bytecode instructions to make it easier for us to debug/diagnose both the virtual machine and our bytecode programs as we go.
 * **Step 1: Maths**: Having created a simple stack VM, let's add some basic calculation functionality. This will require introducing some bytecode instructions to do the canonical maths operations (add, subtract, etc).
 * **Step 2: Comparisons**: Very similar to the mathematical operators, comparison operators compare two values and return either a "true" or "false" result to the top of the stack.
-* **Step 3: **:
+* **Step 3: Jumping and Branching**: Programs often need to change their next execution location from the "next" address to one elsewhere in the code stream, often as the result of a comparison operator. (This is what happens when you write an `if`/`else` branch in code, after all.) So we need to implement a set of "execution modification" bytecode instructions.
 * **Step 4: **:
 
 Some optional steps to consider adding to your virtual machine:
