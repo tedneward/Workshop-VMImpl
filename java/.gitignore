@@ -4,3 +4,12 @@
 # Ignore Gradle build output directory
 build
 bin
+
+##
+## Visual Studio Code
+##
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
