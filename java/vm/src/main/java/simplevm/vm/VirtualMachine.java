@@ -205,6 +205,58 @@ public class VirtualMachine {
                 push(lhs <= rhs ? 1 : 0);
                 break;
             }
+
+            // Branching ops
+            case JMP:
+            {
+                trace("JMP " + operands[0]);
+                ip = operands[0];
+                break;
+            }
+            case RJMP:
+            {
+                trace("RJMP " + operands[0]);
+                ip += operands[0];
+                break;
+            }
+            case JMPI:
+            {
+                trace("JMPI");
+                int location = pop();
+                ip = location;
+                break;
+            }
+            case RJMPI:
+            {
+                trace("RJMPI");
+                int offset = pop();
+                ip += offset;
+                break;
+            }
+            case JZ:
+            {
+                trace("JZ " + operands[0]);
+                int jump = pop();
+                if (jump == 0) { 
+                    ip = operands[0];
+                }
+                else {
+                    ip += 2;
+                }
+                break;
+            }
+            case JNZ:
+            {
+                trace("JNZ " + operands[0]);
+                int jump = pop();
+                if (jump != 0) { 
+                    ip = operands[0];
+                }
+                else {
+                    ip += 2;
+                }
+                break;
+            }
         }
     }
     int ip = 0;
@@ -213,10 +265,6 @@ public class VirtualMachine {
         {
             switch (code[ip])
             {
-                case HALT:
-                    trace("HALT at " + ip);
-                    return;
-
                 // 0-operand opcodes
                 //
                 case NOP:
@@ -242,11 +290,25 @@ public class VirtualMachine {
                     ip++;
                     break;
 
+                case JMPI:
+                case RJMPI:
+                    execute(code[ip]);
+                    // Do NOT adjust ip
+                    break;
+
                 // 1-operand opcodes
                 //
                 case CONST:
                     execute(code[ip], code[ip + 1]);
                     ip += 2;
+                    break;
+
+                case JMP:
+                case RJMP:
+                case JZ:
+                case JNZ:
+                    execute(code[ip], code[ip + 1]);
+                    // Do NOT adjust ip
                     break;
 
                 // 2-operand (or more) opcodes

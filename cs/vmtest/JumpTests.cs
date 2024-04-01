@@ -79,6 +79,34 @@ public class JumpTests
     }
 
     [TestMethod]
+    public void TestJNZ()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        vm.Execute(new Bytecode[] {
+            /* 0*/ Bytecode.CONST, (Bytecode)5,
+            /* 2*/ Bytecode.JNZ, (Bytecode)6, // Jump to IP 6 if TOS (5) is not zero
+            /* 4*/ Bytecode.FATAL,
+            /* 5*/ Bytecode.FATAL,
+            /* 6*/ Bytecode.NOP
+        });
+    }
+
+    [TestMethod]
+    public void TestJZ()
+    {
+        VirtualMachine vm = new VirtualMachine();
+
+        vm.Execute(new Bytecode[] {
+            /* 0*/ Bytecode.CONST, (Bytecode)0,
+            /* 2*/ Bytecode.JZ, (Bytecode)6, // Jump to IP 6 if TOS (0) is zero
+            /* 4*/ Bytecode.FATAL,
+            /* 5*/ Bytecode.FATAL,
+            /* 6*/ Bytecode.NOP
+        });
+    }
+
+    [TestMethod]
     public void TestLotsofJumps() {
         VirtualMachine vm = new VirtualMachine();
         vm.Execute(new Bytecode[] {

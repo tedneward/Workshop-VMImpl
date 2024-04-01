@@ -31,6 +31,14 @@ public enum Bytecode
     LT,
     GTE,
     LTE,
+
+    // Branching opcodes
+    JMP,
+    JMPI,
+    RJMP,
+    RJMPI,
+    JZ,
+    JNZ,
 }
 
 
@@ -218,6 +226,57 @@ public class VirtualMachine
                 Push(lhs <= rhs ? 1 : 0);
                 break;
             }
+
+            // Branching
+            //
+            case Bytecode.JMP:
+            {
+                Trace("JMP " + operands[0]);
+                IP = operands[0];
+                break;
+            }
+            case Bytecode.RJMP:
+            {
+                Trace("RJMP " + operands[0]);
+                IP += operands[0];
+                break;
+            }
+            case Bytecode.JMPI:
+            {
+                int location = Pop();
+                Trace("JMPI " + location);
+                IP = location;
+                break;
+            }
+            case Bytecode.RJMPI:
+            {
+                int offset = Pop();
+                Trace("RJMPI " + offset);
+                IP += offset;
+                break;
+            }
+            case Bytecode.JZ:
+            {
+                Trace("JZ " + operands[0]);
+                if (Pop() == 0) {
+                    IP = operands[0];
+                }
+                else {
+                    IP += 2;
+                }
+                break;
+            }
+            case Bytecode.JNZ:
+            {
+                Trace("JNZ " + operands[0]);
+                if (Pop() != 0) {
+                    IP = operands[0];
+                }
+                else {
+                    IP += 2;
+                }
+                break;
+            }
         }
     }
     int IP = -1;
@@ -252,6 +311,12 @@ public class VirtualMachine
                     IP += 1;
                     break;
 
+                case Bytecode.JMPI:
+                case Bytecode.RJMPI:
+                    Execute(opcode);
+                    // Do NOT adjust IP
+                    break;
+
                 // 1-operand opcodes
                 case Bytecode.CONST:
                     int operand = (int)code[IP + 1];
@@ -259,7 +324,19 @@ public class VirtualMachine
                     IP += 2;
                     break;
 
+                case Bytecode.JMP:
+                case Bytecode.RJMP:
+                case Bytecode.JZ:
+                case Bytecode.JNZ:
+                    Execute(code[IP], (int)code[IP + 1]);
+                    // Do NOT adjust IP
+                    break;
+
                 // 2-operand opcodes
+
+                // Special handling to bail out early
+                case Bytecode.HALT:
+                    return;
 
                 // Unrecognized opcode
                 default:
