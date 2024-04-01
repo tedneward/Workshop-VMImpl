@@ -6,7 +6,6 @@ public enum Bytecode
     DUMP,
     TRACE,
     PRINT,
-    HALT,
     FATAL,
 
     // Stack opcodes
