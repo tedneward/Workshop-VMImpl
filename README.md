@@ -1,5 +1,5 @@
-# Workshop-VMImpl: Step 2 (Comparisons) - Complete!
-Welcome to my implementation of step 2! This will essentially be the same code as what's in the branch `step3begin`, but this document will be different (since the `step3begin` branch will contain the instructions for Step 3).
+# Workshop-VMImpl: Step 3 (Branching)
+Welcome to step 3! In this step, we implement some bytecode instructions to jump and branch, all of which have the practical effect of changing the instruction pointer (IP) for the next instruction to execute.
 
 ## Important Note: Tests
 Note that both projects have unit tests in place already ***that will fail***, out of the box, right now. These are intended as very rough guides to make sure that your implementation meets our "expectations" (basically, that your code will work for future steps in the manner in which the workshop creator is expecting!). These are not considered to be extensive or comprehensive or even good examples of tests or TDD--they're just there to help make sure we're all on the same path together, and to give you a sense of what we're trying to build (in those situations where the text above isn't clear enough).
@@ -7,25 +7,24 @@ Note that both projects have unit tests in place already ***that will fail***, o
 You are, of course, encouraged to add a few of your own, just to make sure that the code coverage number is the industry-standard 110%!
 
 ## Steps
-We will now add the range of comparison opcodes (equals, not-equals, greater-than, greater-than-or-equals, and so on). These are all binary operators, taking two elements off the top of the stack, performing their comparison, and pushing the result (a "1" for true, a "0" for false) onto the top of the stack.
+There's several different kinds of jumping/branching instructions we can consider, all of which are useful in different scenarios. 
 
-> Implementation note: Although the "1" for true and "0" for false is a pretty universal assumption, some languages and platforms have experimented with other values here--pity the poor Visual Basic programmer (pre-.NET version), where "0" was true, and "-1" wsa false. To this day, I've never heard any of VB language designers explain why they went with that.
+### Absolute direct jump
+The first, the `JMP` bytecode instruction, unconditionally sets the new instruction pointer to be the value passed as a parameter in the bytecode. So, for example, if the bytecode stream contains `JMP 12`, the next instruction to be executed is the 12th instruction in the stream, regardless of what that is.
 
-Note that for some operators (equals, not-equals) the order of parameters on the stack is not important, but for others (greater-than, lesser-than, etc) it will be important for you to make sure you are clear as to which of the two parameters on the stack are the "left" of the operation, and which is the "right" (as you no doubt discovered when implementing `SUB`, `DIV`, and `MOD` in the last step.)
+> Implementation note: Many CPU assembly languages support this same kind of instruction, and it became the height of hacker culture back in the day to implement a working program that could jump right into the *middle* of an instruction--that is, to jump to the location specifying not an instruction, but an operand, which was interpreted as an instruction, which actually worked without error. (It was a simpler time....)
 
-### Equality (==, !=) operators
-These take two parameters off the stack, and push their result back onto the stack.
+### Relative direct jump
+The second, the `RJMP`, or "relative jump", bytecode instruction, unconditionally sets the instruction pointer to be the current instruction pointer, adjusted by the value passed as a parameter. So an `RJMP 3` says to jump to 3 instructions ahead of the current instruction, and an `RJMP -3` says to jump *backwards* by three instructions.
 
-* Implement the `EQ` bytecode, which takes two parameters off the stack, compares their numerical values (since they are all integers), and pushes either a "1" if they are the same value, or a "0" if they are not, onto the top of the stack.
-* Implement the `NEQ` bytecode, which does the inverse of the `EQ` bytecode.
+### Absolute indirect jump
+The third, the `JMPI`, or "indirect jump", bytecode instruction, takes its absolute target location from the top of the operation stack (rather than from the bytecode stream), and sets the instruction pointer to that value. So a bytecode stream of `CONST 5`/`JMPI` would jump to IP 5 and begin executing from there.
 
-### Relative (<, >, <=, or >=) operators
-These take the top two parameters off the stack, and push their result back onto the stack.
+> Implementation note: In many languages, this is actually handled well beneath the surface of the VM through "dynamic dispatch" calls to virtual methods. In many of the object languages, for example, an object has a "v-table" (or virtual-table-of-function-pointers), and when executing a method on an object, the instruction stream loads the address of the appropriate method from the v-table, then calls to the location specified by that pointer. It's kinda trippy when you first see it.
 
-* Implement `GT`, which is our "greater-than" bytecode.
-* Implement `GTE`, which is our "greather-than-or-equal" bytecode.
-* Implement `LT`, which is our "lesser-than" bytecode.
-* Implement `LTE`, which is our "lesser-than-or-equal" bytecode.
+### Relative indirect jump
+The third, the `RJMPI`, or "relative indirect jump", bytecode instruction, takes its relative target location from the top of the operation stack (rather than from the bytecode stream), and sets the instruction pointer to that value. So a bytecode stream of `CONST -5`/`RJMPI` would jump to IP (current IP -5) and begin executing from there.
 
-> Discussion opportunity: All of these operators have the interesting property in that they are all deeply similar to one another--`GT` is essentially the inverse of `LTE`, for example. What's the absolute minimum operator set you could use here? (My intuition suggests three out of the six, but I'm no mathematician.)
+## Note
+There is another form of jump/branch, often a "call" or "go-sub" instruction, in which the virtual machine "remembers" the instruction pointer at which the call takes place, and expects a later "return" instruction to cause the VM to come back to the original location (in order to execute the next instruction). This is usually in conjunction with more in the way of "procedure" support, which we'll explore in Step 6.
 
