@@ -6,6 +6,7 @@ public enum Bytecode
     DUMP,
     TRACE,
     PRINT,
+    HALT,
     FATAL,
 
     // Stack opcodes
@@ -38,6 +39,10 @@ public enum Bytecode
     RJMPI,
     JZ,
     JNZ,
+
+    // Globals
+    GSTORE,
+    GLOAD,
 }
 
 
@@ -60,6 +65,7 @@ public class VirtualMachine
         Console.WriteLine("===============");
         Console.WriteLine("IP: {0} / Trace: {1}", IP, trace);
         Console.WriteLine("Working stack (SP {0}): {1}", SP, String.Join(", ", Stack));
+        Console.WriteLine("Globals: {0}", Globals);
     }
 
     // Stack management
@@ -82,6 +88,11 @@ public class VirtualMachine
     }
 
 
+    // Globals
+    //
+    public int[] globals = new int[32];
+    public int[] Globals { get { return globals; } }
+
 
     public void Execute(Bytecode opcode, params int[] operands)
     {
@@ -103,6 +114,9 @@ public class VirtualMachine
                 Trace("PRINT");
                 Console.WriteLine(Pop());
                 break;
+            case Bytecode.HALT:
+                Trace("HALT");
+                return;
             case Bytecode.FATAL:
                 Trace("FATAL");
                 throw new Exception(String.Format("FATAL exception thrown; IP {0}",IP));
@@ -172,7 +186,7 @@ public class VirtualMachine
                 Push(-val);
                 break;
             }
-            
+
             // Comparison ops
             case Bytecode.EQ:
             {
@@ -273,6 +287,23 @@ public class VirtualMachine
                 }
                 break;
             }
+
+            // Globals
+            //
+            case Bytecode.GSTORE:
+            {
+                Trace("GSTORE " + operands[0]);
+                int index = operands[0];
+                globals[index] = Pop();
+                break;
+            }
+            case Bytecode.GLOAD:
+            {
+                Trace("GLOAD " + operands[0]);
+                int index = operands[0];
+                Push(globals[index]);
+                break;
+            }            
         }
     }
     int IP = -1;
@@ -284,6 +315,7 @@ public class VirtualMachine
             switch (opcode)
             {
                 // 0-operand opcodes
+                //
                 case Bytecode.NOP:
                 case Bytecode.DUMP:
                 case Bytecode.TRACE:
@@ -314,21 +346,28 @@ public class VirtualMachine
                     break;
 
                 // 1-operand opcodes
+                //
                 case Bytecode.CONST:
+                case Bytecode.GSTORE:
+                case Bytecode.GLOAD:
                     int operand = (int)code[IP + 1];
                     Execute(opcode, operand);
                     IP += 2;
                     break;
-
+                
                 case Bytecode.JMP:
                 case Bytecode.RJMP:
                 case Bytecode.JZ:
                 case Bytecode.JNZ:
-                    Execute(code[IP], (int)code[IP + 1]);
+                    Execute(opcode, (int)code[IP + 1]);
                     // Do NOT adjust IP
                     break;
 
                 // 2-operand opcodes
+
+                // Special handling to bail out early
+                case Bytecode.HALT:
+                    return;
 
                 // Unrecognized opcode
                 default:

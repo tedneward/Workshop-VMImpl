@@ -9,7 +9,8 @@ public class Bytecode {
     public static final int DUMP = 1;
     public static final int TRACE = 2;
     public static final int PRINT = 3;
-    public static final int FATAL = 4;
+    public static final int HALT = 4;
+    public static final int FATAL = 5;
 
     // Stack manipulation
     public static final int CONST = 10;
@@ -39,4 +40,8 @@ public class Bytecode {
     public static final int RJMPI = 43;
     public static final int JNZ = 44;
     public static final int JZ = 45;
+
+    // Globals
+    public static final int GLOAD = 50;
+    public static final int GSTORE = 51;
 }

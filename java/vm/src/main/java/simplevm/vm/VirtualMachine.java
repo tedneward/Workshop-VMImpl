@@ -30,6 +30,7 @@ public class VirtualMachine {
         System.out.println("=============");
         System.out.println("IP: " + ip);
         System.out.println("Working stack (SP " + sp + "): " + Arrays.toString(Arrays.copyOfRange(stack, 0, sp+1)));
+        System.out.println("Globals: " + Arrays.toString(globals));
     }
 
     // Stack management
@@ -50,6 +51,13 @@ public class VirtualMachine {
         int result = stack[sp--];
         trace("---> popped ; stack: " + Arrays.toString(Arrays.copyOfRange(stack, 0, sp+1)));
         return result;
+    }
+
+    // Globals
+    //
+    int[] globals = new int[32];
+    int[] getGlobals() {
+        return globals;
     }
 
     public void execute(int opcode, int... operands) {
@@ -143,7 +151,7 @@ public class VirtualMachine {
                 trace("NEG");
                 push(- pop());
                 break;
-
+            
             // Comparison ops
             case EQ:
             {
@@ -257,6 +265,21 @@ public class VirtualMachine {
                 }
                 break;
             }
+
+            // Globals
+            //
+            case GLOAD:
+            {
+                trace("GLOAD " + operands[0]);
+                push(globals[operands[0]]);
+                break;
+            }
+            case GSTORE:
+            {
+                trace("GSTORE " + operands[0]);
+                globals[operands[0]] = pop();
+                break;
+            }
         }
     }
     int ip = 0;
@@ -265,8 +288,11 @@ public class VirtualMachine {
         {
             switch (code[ip])
             {
+                case HALT:
+                    trace("HALT at " + ip);
+                    return;
+
                 // 0-operand opcodes
-                //
                 case NOP:
                 case TRACE:
                 case DUMP:
@@ -293,12 +319,13 @@ public class VirtualMachine {
                 case JMPI:
                 case RJMPI:
                     execute(code[ip]);
-                    // Do NOT adjust ip
+                    // Do NOT adjust IP
                     break;
-
+                    
                 // 1-operand opcodes
-                //
                 case CONST:
+                case GLOAD:
+                case GSTORE:
                     execute(code[ip], code[ip + 1]);
                     ip += 2;
                     break;
@@ -308,7 +335,7 @@ public class VirtualMachine {
                 case JZ:
                 case JNZ:
                     execute(code[ip], code[ip + 1]);
-                    // Do NOT adjust ip
+                    // Do NOT adjust IP
                     break;
 
                 // 2-operand (or more) opcodes
