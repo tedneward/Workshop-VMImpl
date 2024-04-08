@@ -288,10 +288,6 @@ public class VirtualMachine {
         {
             switch (code[ip])
             {
-                case HALT:
-                    trace("HALT at " + ip);
-                    return;
-
                 // 0-operand opcodes
                 case NOP:
                 case TRACE:
