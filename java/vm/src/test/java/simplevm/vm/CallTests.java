@@ -8,11 +8,32 @@ import static simplevm.vm.Bytecode.*;
 
 public class CallTests {
 
-    @Test void testCall() {
+    @Test void testSimpleCall() {
         VirtualMachine vm = new VirtualMachine();
         vm.execute(new int[] {
             // 0: entrypoint
-            /* 0*/ NOP,//TRACE,
+            /* 0*/ TRACE,
+            /* 1*/ CALL, 5,
+            /* 3*/ JMP, 10,
+            // 5: a simple print(12) function
+            /* 5*/ CONST, 12,
+            /* 6*/ PRINT,
+            /* 7*/ RET,
+            // 8: end
+            /* 8*/ NOP,
+            /* 9*/ NOP,
+            /*10*/ NOP
+        });
+
+        // Stack should be empty (there was no return value pushed)
+        assertEquals(0, vm.getStack().length);
+    }
+
+    @Test void testCountdownFunction() {
+        VirtualMachine vm = new VirtualMachine();
+        vm.execute(new int[] {
+            // 0: entrypoint
+            /* 0*/ TRACE,
             /* 1*/ JMP, 25,
             // function countdown(count)
             //    expects count on top of stack; no return value

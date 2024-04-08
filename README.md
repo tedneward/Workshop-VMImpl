@@ -1,42 +1,31 @@
-# Workshop-VMImpl: Step 5 (Procedures and Locals)
-Welcome to step 5! In this step, you'll take a major step, implementing functionality to provide procedure calls--the ability to define a procedure, call it with parameters, and return back to (just after) the point of call without having to manage the stack explicitly. Because each procedure call can/should support local variable declarations, we'll also support local storage, similar to how we did global storage, but scoped to the local call frame.
+# Workshop-VMImpl: Step 5 (Procedures and Locals) - Completed!
+Welcome to my implementation of step 5!
 
-## Steps
-Procedure calls, from an assembly language perspective, are essentially a formalized convention around three things:
+## Implementation notes
 
-* the location of parameters to the procedure call,
-* the location of the return address, and
-* a scheme by which local variables can be declared and reclaimed at the termination of the procedure call
 
-For this virtual machine, we will create a collection of "stack frames" (also known as "activation records", or by the more colloquial "call stack") that exist as a separate entity to the operations stack. While a more close-to-x86 representation would have us store procedure parameters and local variables on the stack, it's much (much) easier to have a separate data structure to store the call stack--generating stack traces, for example, is much easier when there's a formal list of each call, along with the locals allocated within that stack frame.
+## Further work
+You may want to consider some additional implementation work, just for fun:
 
-> NOTE: This approach is the exact same approach as used by the JVM and CLR. Remember, everything we do here is an abstraction, and when (if) our implementation reaches the point of doing JIT compilation to native CPU instructions, we would generation machine code to use the approach required by whatever the CPU's convention is.
+### CALL-Indirect
+Add a CALLI opcode that takes the index to call from the top of the operand stack, rather than from the next value in the bytecode. (This would be how we would implement invocation through a pointer at runtime, rather than a known value at the time the code was compiled, so as to implement dynamic dispatch of methods and inheritance, for example.)
 
-In some virtual machines, by the way, procedures (or methods) are defined apart from the main bytecode stream, and the virtual machine switches between which bytecode stream it is executing. We will keep it simple, and assume that all the procedures are defined in one contiguous stream of bytecode. That means it will be left up to the programmer (you) to make sure that each procedure's start and end don't overlap with any other procedure's start and end (unless you really want them to for some strange reason). 
+### Top-level CallFrame
+It would be an interesting exercise to implement in the `VirtualMachine` the assumption that there is always at least one `CallFrame` active; that is to say, when we call `execute(int[])`, we create a `CallFrame` in which to execute that code. This would also give us locals support at the top-most level of code execution. That in turn could spark some discussion as to whether we need "globals" when we have "locals" at this topmost level.
 
-### Create CallFrame
-The first thing we require is a `CallFrame` type (which we will drop into a linked list called "frames" and grow/shrink as calls are created). This `CallFrame` will contain only a few things:
+However, doing this requires that we always be keeping an eye on the returnAddress of any `CallFrame`, because if that points to -1 (or some other signal), it indicates we are at the topmost level of the call stack, and there's no place to return to. Or, rather, returning from the topmost `CallFrame` should terminate the `VirtualMachine` entirely, just like returning from `main` does in a C-family-language program.
 
-* an int array called `locals`, which is where locals to the procedure will be allocated,
-* an int called `returnAddress`, which will contain the IP location for where we wish to return when this procedure is finished
-* a constructor to initialize locals to a fixed-size array of 32 integers. 
+### Add Strings
+Strings are really just a sequence of integer values (ASCII and Unicode are both "encodings" of how a human alphabet should be rendered in binary values), so adding first-class String support to our VM would be relatively easy, but widespread. You'd need to:
 
-> NOTE: in some VMs, such as the JVM, the size of the locals storage space is determined at runtime by some metadata defined as part of the code being loaded--in the JVM, you can see this in javap-generated output as "locals: x". As it turns out, the JVM actually stores a great deal of information about locals in methods as part of its metadata, but only retains it if the "debug" flag is on during javac compilation. The CLR does something similarly in its method metadata tables.
+* figure out what a String representation looks like in the VM. (C, for example, considers a String to be a sequence of 8-bit values that are eventually terminated by a "0" value.)
+* figure out what a String on the operand stack looks like. In most implementations, it'll be an address to an array of values, but you'll need to differentiate (somehow) between `CONST 12` and `CONST "Hello world"` that happens to sit at location 12 somewhere in memory. Some VMs use different bytecode for the different kinds of things pushed (`CONSTI` for a constant-integer vs `CONSTL` for constant-long vs `CONSTS` for constant-string, for example), while others use a "constant pool" to hold all of the constants in use by this program, and `CONST 5` means "push the constant found in constantPool[5] onto the stack".
 
-Thus:
+### Add other numeric types
+Many platforms differentiate between 8-, 16-, 32-, 64-, and 128-bit values. (Some go even larger.) Without changing the fundamental structure of the VirtualMachine as it exists now, how would you add support for those types?
 
-* create the `CallFrame` type
+### Add some type-safety
+What happens if we try to add an integer value to a string? What happens when we try to add an integer value to a floating-point value? What should happen? More importantly, where and how do we track the type information of a given piece of data, so that we know what it is we're adding (or subtracting or dividing or ...)?
 
-    > Java implementation NOTE: if you choose to define the `CallFrame` type inside of the `VirtualMachine` type in VirtualMachine.java, make sure it is declared as a "static" class, so that it doesn't drag along a pointer to the `VirtualMachine` in each and every instance of the `CallFrame`.
-
-* create a field in the `VirtualMachine` called `frames` that is a linked list of `CallFrame`s
-* create a method in the `VirtualMachine` called `fp` that will return the topmost `CallFrame`. ("fp" is our "frame pointer", which should always point to the currently-active call frame.)
-
-### Implement CALL and RET
-Now let's implement the `CALL` and `RET` bytecode, which will perform the procedure call and return-from-procedure, respectively. `CALL` will expect an address (integer offset into the code) as an operand. It will immediately create a new `CallFrame`, capture the return address (current IP plus 2), and add the `CallFrame` to `frames`, and continue execution from there. `RET`, on the other hand, will look at the current `CallFrame`, extract the `returnAddress`, set `ip` to point to that value, and then remove the current `CallFrame` from `frames` entirely.
-
-### Implement STORE and LOAD
-Finally, the `STORE` and `LOAD` instructions will store and load, like `GSTORE` and `GLOAD` do, but to locals in the current `CallFrame`, rather than to the global storage space. 
-
-## Congratulations!
-If you have completed this, and all the tests pass, you have completed the workshop!
+### Create an assembly text format
+Right now all the bytecode we execute is stored as a part of the tests we're writing; a more reasonable virtual machine would have the ability to execute files that contain our bytecode. What sort of file format would offer forward-compatibility with new features we might add to the VM, while still being able to execute "v1" bytecode scripts we might write today? Write an "assembler" that takes a text-based format and "assemble" it into the raw array of bytes that we've been working with; when you're done with that, write a "disassembler" that does the opposite. How much code can you reuse between these two utilities? Make sure you can "round-trip" between them: assemble a program into binary, then disassemble the binary back into a text format that can be assembled into a binary again, all without losing anything along the way.

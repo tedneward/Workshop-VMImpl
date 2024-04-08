@@ -31,6 +31,14 @@ public class VirtualMachine {
         System.out.println("IP: " + ip);
         System.out.println("Working stack (SP " + sp + "): " + Arrays.toString(Arrays.copyOfRange(stack, 0, sp+1)));
         System.out.println("Globals: " + Arrays.toString(globals));
+        System.out.println("Call stack: ");
+        for (int f = frames.size(); f != 0; f--) {
+            CallFrame cf = frames.get(f - 1);
+            System.out.println("  Call Frame " + (f - 1) + ":");
+            System.out.println("  +-- Return Address: " + cf.returnAddress);
+            System.out.println("  +-- Locals: " + Arrays.toString(cf.locals));
+            System.out.println("  +-----------------------------------------");
+        }
     }
 
     // Stack management
@@ -59,6 +67,14 @@ public class VirtualMachine {
     int[] getGlobals() {
         return globals;
     }
+
+    // Call stack
+    static class CallFrame {
+        public int returnAddress = -1;
+        public int[] locals = new int[32];
+    }
+    List<CallFrame> frames = new LinkedList<CallFrame>();
+    int fp = -1;
 
     public void execute(int opcode, int... operands) {
         switch (opcode) {
@@ -280,6 +296,52 @@ public class VirtualMachine {
                 globals[operands[0]] = pop();
                 break;
             }
+
+            // Procedures and locals
+            //
+            case CALL:
+            {
+                trace("CALL " + operands[0]);
+
+                // Set up CallFrame
+                CallFrame newFrame = new CallFrame();
+                newFrame.returnAddress = ip + 2; // next opcode (after the operand)
+
+                // Push it
+                frames.add(newFrame);
+                fp += 1;
+
+                // Get our new location
+                ip = operands[0];
+
+                break;
+            }
+            case RET:
+            {
+                trace("RET");
+
+                // Get our new location
+                ip = frames.get(fp).returnAddress;
+
+                // Eliminate the current CallFrame
+                frames.remove(fp);
+                fp--;
+
+                break;
+            }
+            case LOAD:
+            {
+                trace("LOAD " + operands[0]);
+                push(frames.get(fp).locals[operands[0]]);
+                break;
+            }
+            case STORE:
+            {
+                trace("STORE " + operands[0]);
+                frames.get(fp).locals[operands[0]] = pop();
+                break;
+            }
+
         }
     }
     int ip = 0;
@@ -288,10 +350,6 @@ public class VirtualMachine {
         {
             switch (code[ip])
             {
-                case HALT:
-                    trace("HALT at " + ip);
-                    return;
-
                 // 0-operand opcodes
                 case NOP:
                 case TRACE:
@@ -318,6 +376,7 @@ public class VirtualMachine {
 
                 case JMPI:
                 case RJMPI:
+                case RET:
                     execute(code[ip]);
                     // Do NOT adjust IP
                     break;
@@ -326,6 +385,8 @@ public class VirtualMachine {
                 case CONST:
                 case GLOAD:
                 case GSTORE:
+                case LOAD:
+                case STORE:
                     execute(code[ip], code[ip + 1]);
                     ip += 2;
                     break;
@@ -334,6 +395,7 @@ public class VirtualMachine {
                 case RJMP:
                 case JZ:
                 case JNZ:
+                case CALL:
                     execute(code[ip], code[ip + 1]);
                     // Do NOT adjust IP
                     break;

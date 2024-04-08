@@ -44,4 +44,10 @@ public class Bytecode {
     // Globals
     public static final int GLOAD = 50;
     public static final int GSTORE = 51;
+
+    // Functions
+    public static final int CALL = 60;
+    public static final int RET = 61;
+    public static final int LOAD = 62;
+    public static final int STORE = 63;
 }

@@ -6,6 +6,26 @@ using vm;
 public class CallTests
 {
     [TestMethod]
+    public void TestSimpleCall()
+    {
+        VirtualMachine vm = new VirtualMachine();
+        vm.Execute(new Bytecode[] {
+            // 0: entrypoint
+            /* 0*/ Bytecode.NOP,//TRACE,
+            /* 1*/ Bytecode.CALL, (Bytecode)5,
+            /* 3*/ Bytecode.JMP, (Bytecode)10,
+            // 5: a simple print(12) function
+            /* 5*/ Bytecode.CONST, (Bytecode)12,
+            /* 6*/ Bytecode.PRINT,
+            /* 7*/ Bytecode.RET,
+            // 8: end
+            /* 8*/ Bytecode.NOP,
+            /* 9*/ Bytecode.NOP,
+            /*10*/ Bytecode.NOP
+        });
+    }
+
+    [TestMethod]
     public void TestCountdownFunction()
     {
         VirtualMachine vm = new VirtualMachine();
