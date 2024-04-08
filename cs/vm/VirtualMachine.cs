@@ -6,7 +6,6 @@ public enum Bytecode
     DUMP,
     TRACE,
     PRINT,
-    HALT,
     FATAL,
 
     // Stack opcodes
@@ -364,10 +363,6 @@ public class VirtualMachine
                     break;
 
                 // 2-operand opcodes
-
-                // Special handling to bail out early
-                case Bytecode.HALT:
-                    return;
 
                 // Unrecognized opcode
                 default:
