@@ -126,7 +126,7 @@ public class VirtualMachine {
             }
             case MOD:
             {
-                trace("ADD");
+                trace("MOD");
                 // Left-to-right-pushed parameter order
                 // means we extract in reverse order
                 int rhs = pop();
