@@ -1,0 +1,7 @@
+#[main]
+struct Cli {
+    #[short, long]
+    input: string,
+    #[short, long]
+    trace: bool,
+}
