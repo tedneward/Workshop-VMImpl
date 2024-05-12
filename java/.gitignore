@@ -5,6 +5,9 @@
 build
 bin
 
+# Ignore directories inside src directory
+app/bin/*
+
 ##
 ## Visual Studio Code
 ##
